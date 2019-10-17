@@ -7,14 +7,10 @@ package ca.frar.lr1;
 
 /**
  *
- * @author Ed Armstrong
+ * @author edward
  */
-abstract class Action {
-    enum TYPE {SHIFT, REDUCE, ACCEPT, GOTO}    
-    TYPE type;
-    
-    TYPE getType(){
-        return type;
+public class UnknownProductionException extends RuntimeException{
+    public UnknownProductionException(Symbol symbol){
+        super("No production found for symbol '" + symbol + "'");
     }
-    
 }

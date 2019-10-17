@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author edward
  */
-class Symbol {
+public class Symbol {
     private final String originString;
     
     public static Symbol END = new Symbol(){
@@ -69,11 +69,12 @@ class Symbol {
     
     @Override
     public boolean equals(Object object){
+        if (object == Symbol.EMPTY && this == Symbol.EMPTY) return true;
+        if (object == Symbol.END && this == Symbol.END) return true;
+        if (object == Symbol.NULL_PART && this == Symbol.NULL_PART) return true;
+        
         if (object.getClass() != Symbol.class) return false;
         Symbol that = (Symbol) object;
-        if (that == Symbol.EMPTY && this == Symbol.EMPTY) return true;
-        if (that == Symbol.END && this == Symbol.END) return true;
-        if (that == Symbol.NULL_PART && this == Symbol.NULL_PART) return true;
         return this.originString.equals(that.originString);
     }
 

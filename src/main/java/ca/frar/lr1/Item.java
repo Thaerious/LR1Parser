@@ -6,6 +6,7 @@
 package ca.frar.lr1;
 
 import static ca.frar.lr1.Symbol.NULL_PART;
+import java.util.Objects;
 
 /**
  *
@@ -32,6 +33,10 @@ class Item {
         return null;       
     }
     
+    public boolean isFinal(){
+        return this.index == this.size();
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();        
@@ -55,6 +60,14 @@ class Item {
 
         return builder.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.rule);
+        hash = 29 * hash + this.index;
+        return hash;
+    }
     
     @Override
     public boolean equals(Object obj) {
@@ -63,4 +76,8 @@ class Item {
         if (!this.rule.equals(that.rule)) return false;
         return this.index == that.index;
     }    
+
+    int size() {
+        return rule.rhs.size();
+    }
 }

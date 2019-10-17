@@ -7,19 +7,19 @@ package ca.frar.lr1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  *
  * @author Ed Armstrong
  */
 public class First extends ArrayList<Symbol> {
+    private final HashMap<Symbol, HashSet<Rule>> rules;
+    private final ParserBase parser;
 
-    private final HashMap<Symbol, ArrayList<Rule>> rules;
-    private final Parser parser;
-
-    public First(Parser parser, Symbol symbol) {
+    public First(ParserBase parser, Symbol symbol) {
         this.parser = parser;
-        this.rules = parser.rules;
+        this.rules = parser.getRules();
         this.first(symbol);
     }
 

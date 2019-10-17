@@ -4,31 +4,38 @@
  * and open the template in the editor.
  */
 package ca.frar.lr1;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  *
- * @author edward
+ * @author Ed Armstrong
  */
-public class State extends ItemList{
+class State extends ItemSet{
     final int index;
-   
-    public State(int index){
-        super();
+    private final HashMap<Symbol, Action> actions = new HashMap<>();
+    
+    State(int index){
         this.index = index;
-    }   
-
-    public State(int index, Collection<Item> source){
-        super();
+    }
+    
+    State(int index, Collection<Item> source){
         this.index = index;
         this.addAll(source);
-    }   
+    }
+    
+    void addAction(Symbol symbol, Action action){
+        this.actions.put(symbol, action);
+    }
+    
+    Action getAction(Symbol symbol){
+        return this.actions.get(symbol);
+    }
     
     /**
-     * Return all unique items with a cursor in from of symbol.
+     * Return all unique items with a cursor in front of symbol.
      * @param symbol 
      */
     List<Item> getAllItems(Symbol symbol){
@@ -39,5 +46,5 @@ public class State extends ItemList{
             }
         }
         return list;
-    }
+    }    
 }

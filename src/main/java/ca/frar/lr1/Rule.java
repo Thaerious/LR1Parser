@@ -7,13 +7,16 @@ package ca.frar.lr1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  */
 public class Rule {
+    private static int nextIndex = 0;
     final Symbol lhs;
     final ArrayList<Symbol> rhs = new ArrayList<>();
-
+    final int index;
+    
     /**
      * Create a single rule from a comma delimitated RHS. The LHS must be a
      * non-terminal.
@@ -37,6 +40,7 @@ public class Rule {
     }
 
     Rule(String rule) {
+        this.index = nextIndex++;
         int splitIndex = rule.indexOf(":");
         this.lhs = new Symbol(rule.substring(0, splitIndex).trim());
         String rhs = rule.substring(splitIndex + 1).trim();
@@ -59,6 +63,7 @@ public class Rule {
      * @param rhs
      */
     Rule(String lhs, String rhs) {
+        this.index = nextIndex++;
         this.lhs = new Symbol(lhs);
         String[] split = rhs.split("[ \t]+");
         for (String part : split) {
@@ -93,13 +98,20 @@ public class Rule {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.lhs);
+        hash = 17 * hash + Objects.hashCode(this.rhs);
+        return hash;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(lhs).append(" : ");
         for (Symbol r : rhs) {
             builder.append(r.getOrigin()).append(" ");
         }
-        builder.append("\n");
         return builder.toString();
     }
 }

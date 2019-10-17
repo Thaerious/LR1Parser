@@ -5,44 +5,39 @@
  */
 package ca.frar.lr1;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  *
  * @author edward
  */
-public final class Closure extends ItemList {
-    private final HashMap<Symbol, ArrayList<Rule>> rules;
+public final class Closure extends ItemSet {
+    private final HashMap<Symbol, HashSet<Rule>> rules;
 
-    Closure(Parser parser, Rule rule) {
-        this.rules = parser.rules;
+    Closure(ParserBase parser, Rule rule) {
+        this.rules = parser.getRules();
         Item item = rule.getItem(0);        
         closure(item);
     }
     
-    Closure(Parser parser, Item item) {
-        this.rules = parser.rules;
+    Closure(ParserBase parser, Item item) {
+        this.rules = parser.getRules();
         closure(item);
     }    
     
-    Closure(Parser parser, List<Item> list) {
-        this.rules = parser.rules;
+    Closure(ParserBase parser, List<Item> list) {
+        this.rules = parser.getRules();
         for (Item item : list) this.closure(item);
     }        
 
     void closure(Item item) {
-        if (!this.contains(item)) this.add(item);
+        this.add(item);
         if (item.dereference().isTerminal()) return;
 
-        ArrayList<Rule> dRules = this.rules.get(item.dereference());
-        for (Rule rule : dRules){
-            Item item1 = rule.getItem(0);
-            if (!this.contains(item1)){
-                this.add(item1);
-                closure(item1);
-            }
+        for (Rule rule : this.rules.get(item.dereference())){
+            if (this.add(rule.getItem(0))) closure(rule.getItem(0));
         }
     }
 }

@@ -13,50 +13,46 @@ import java.util.Arrays;
  * @author edward
  */
 public class Main {
-    public static void main(String ... args){
-        Parser parser = new Parser();
+
+    public static void main(String... args) {
+        ParserBase parser = new ParserBase();
         Rule start = parser.addRule(new Rule("S' : S"));
         parser.addRule(new Rule("S : E"));
-        Rule r = parser.addRule(new Rule("E : E x E"));
+        parser.addRule(new Rule("E : E x E"));
         parser.addRule(new Rule("E : z"));
-        
-        System.out.println(Arrays.toString(parser.nonterminals.toArray()));
-        System.out.println(Arrays.toString(parser.terminals.toArray()));
-        
-        ArrayList<TableRow> buildStates = parser.buildStates(start);
-        for (TableRow row : buildStates){
-            
-            System.out.println("State " + row.index);
-            ArrayList<Symbol> terminals = parser.terminals;
-            for (Symbol s : terminals){
-                System.out.print(" | " + s.toString());
-            }
 
-            System.out.print(" || ");
-            
-            ArrayList<Symbol> symbols = parser.symbols;
-            for (Symbol s : symbols){
-                System.out.print(s.toString() + " | ");
-            }
-            System.out.println();            
-            
-            for (Symbol s : terminals){
+        ArrayList<State> buildStates = parser.buildStates(start);
+        ArrayList<Symbol> symbols = new ArrayList<>();
+        symbols.addAll(parser.terminals);
+        symbols.addAll(parser.nonterminals);
+        
+        for (Rule rule : parser.getRules().allRules()){
+            System.out.println(rule.index + ": " + rule);
+        }
+        
+        System.out.print("   ");
+        for (Symbol s : symbols) {
+            String format = String.format(" |%3s", s);
+            System.out.print(format);
+        }
+        System.out.println(" |");
+
+        for (State row : buildStates) {
+            System.out.print(String.format("%3d", row.index));
+
+            for (Symbol s : symbols) {
                 Action x = row.getAction(s);
-                System.out.print(" | " + (x == null ? " " : x));
+                String format = String.format(" |%3s", (x == null ? " " : x));
+                System.out.print(format);
             }
+            System.out.println(" |");
+        }
 
-            System.out.print(" || ");
-            
-            for (Symbol s : symbols){
-                Integer x = row.getGoto(s);
-                System.out.print((x == null ? " " : x) + " | ");
-            }
-            System.out.println();              
-            
-            for (Item item : row){
+        for (State row : buildStates) {
+            System.out.println("State " + row.index);
+            for (Item item : row) {
                 System.out.println(item);
             }
-            System.out.println();
         }
     }
 }

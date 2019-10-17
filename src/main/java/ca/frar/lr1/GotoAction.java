@@ -9,21 +9,16 @@ package ca.frar.lr1;
  *
  * @author Ed Armstrong
  */
-public class ReduceAction extends Action{
-
-    private final Rule rule;
+public class GotoAction extends Action{
+    private final int state;
     
-    public ReduceAction(Rule rule){
-        this.type = TYPE.REDUCE;
-        this.rule = rule;
-    }
-    
-    public Rule getRule(){
-        return this.rule;
+    GotoAction(int state){
+        this.state = state;
+        this.type = Action.TYPE.GOTO;        
     }
     
     public String toString(){
-        return "r" + rule.index;
-    }    
+        return "g" + state;
+    }
     
 }

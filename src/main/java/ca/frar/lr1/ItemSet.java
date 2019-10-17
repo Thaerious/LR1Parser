@@ -6,17 +6,18 @@
 package ca.frar.lr1;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
  * @author edward
  */
-public abstract class ItemList extends ArrayList<Item>{
+public abstract class ItemSet extends HashSet<Item>{
     
     @Override
     public boolean equals(Object obj){
-        if (obj instanceof ItemList == false) return false;
-        ItemList that = (ItemList)obj;
+        if (obj instanceof ItemSet == false) return false;
+        ItemSet that = (ItemSet)obj;
         if (this.size() != that.size()) return false;
         for (Item item : this){
             if (! that.contains(item)) return false;

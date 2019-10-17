@@ -10,13 +10,15 @@ package ca.frar.lr1;
  * @author Ed Armstrong
  */
 public class ShiftAction extends Action{
+    private final int state;
     
-    ShiftAction(){
+    ShiftAction(int state){
+        this.state = state;
         this.type = TYPE.SHIFT;        
     }
     
     public String toString(){
-        return "s";
+        return "s" + state;
     }
     
 }

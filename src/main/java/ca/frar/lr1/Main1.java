@@ -5,8 +5,8 @@
  */
 package ca.frar.lr1;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
+
 
 /**
  *
@@ -14,17 +14,18 @@ import java.util.Arrays;
  */
 public class Main1 {
     public static void main(String ... args){
-        Parser parser = new Parser();
-        Rule start = parser.addRule(new Rule("S : N"));
-        parser.addRule(new Rule("N : V = E"));
-        parser.addRule(new Rule("N : E"));
-        parser.addRule(new Rule("E : V"));
-        parser.addRule(new Rule("E : "));
-        parser.addRule(new Rule("V : x"));
-        parser.addRule(new Rule("V : * E"));
+        ParserBase parser = new ParserBase();
+        Rule start = parser.addRule(new Rule("S : A"));
+        parser.addRule(new Rule("A : a B C"));
+        parser.addRule(new Rule("A : A a"));
+        parser.addRule(new Rule("B : b"));
+        parser.addRule(new Rule("C : c"));
+        parser.addRule(new Rule("C : "));
 
-        Follow f = new Follow(parser, new Symbol("E"));
-        System.out.println(f);
-        
+        Item i1 = new Item(start, 0);
+        Item i2 = new Item(start, 0);
+        System.out.println(i1.equals(i2));
+        System.out.println(i1.hashCode());
+        System.out.println(i2.hashCode());
     }
 }
