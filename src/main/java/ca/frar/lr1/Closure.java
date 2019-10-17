@@ -14,7 +14,7 @@ import java.util.List;
  * @author edward
  */
 public final class Closure extends ItemList {
-    private final HashMap<String, ArrayList<Rule>> rules;
+    private final HashMap<Symbol, ArrayList<Rule>> rules;
 
     Closure(Parser parser, Rule rule) {
         this.rules = parser.rules;
@@ -36,7 +36,7 @@ public final class Closure extends ItemList {
         if (!this.contains(item)) this.add(item);
         if (item.dereference().isTerminal()) return;
 
-        ArrayList<Rule> dRules = this.rules.get(item.dereference().toString());
+        ArrayList<Rule> dRules = this.rules.get(item.dereference());
         for (Rule rule : dRules){
             Item item1 = rule.getItem(0);
             if (!this.contains(item1)){

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  */
 public class Rule {
-    final String lhs;
+    final Symbol lhs;
     final ArrayList<Symbol> rhs = new ArrayList<>();
 
     /**
@@ -38,7 +38,7 @@ public class Rule {
 
     Rule(String rule) {
         int splitIndex = rule.indexOf(":");
-        this.lhs = rule.substring(0, splitIndex).trim();
+        this.lhs = new Symbol(rule.substring(0, splitIndex).trim());
         String rhs = rule.substring(splitIndex + 1).trim();
         
         String[] split = rhs.split("[ \t]+");
@@ -59,7 +59,7 @@ public class Rule {
      * @param rhs
      */
     Rule(String lhs, String rhs) {
-        this.lhs = lhs;
+        this.lhs = new Symbol(lhs);
         String[] split = rhs.split("[ \t]+");
         for (String part : split) {
             part = part.trim();

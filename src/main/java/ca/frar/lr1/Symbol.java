@@ -5,6 +5,8 @@
  */
 package ca.frar.lr1;
 
+import java.util.Objects;
+
 /**
  *
  * @author edward
@@ -12,11 +14,37 @@ package ca.frar.lr1;
 class Symbol {
     private final String originString;
     
+    public static Symbol END = new Symbol(){
+        @Override
+        boolean isTerminal(){
+            return true;
+        }    
+        
+        public String toString(){
+            return "$";
+        }
+    };
+    
+    public static Symbol EMPTY = new Symbol(){
+        @Override
+        boolean isTerminal(){
+            return true;
+        }
+        
+        public String toString(){
+            return "~";
+        }
+    };    
+    
     public static Symbol NULL_PART = new Symbol(){
         @Override
         boolean isTerminal(){
             return true;
         }    
+        
+        public String toString(){
+            return "";
+        }        
     };
     
     private Symbol(){
@@ -43,7 +71,17 @@ class Symbol {
     public boolean equals(Object object){
         if (object.getClass() != Symbol.class) return false;
         Symbol that = (Symbol) object;
+        if (that == Symbol.EMPTY && this == Symbol.EMPTY) return true;
+        if (that == Symbol.END && this == Symbol.END) return true;
+        if (that == Symbol.NULL_PART && this == Symbol.NULL_PART) return true;
         return this.originString.equals(that.originString);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.originString);
+        return hash;
     }
     
     @Override
