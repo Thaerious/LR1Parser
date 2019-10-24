@@ -23,6 +23,11 @@ public class NonTerminalASTNode<TOKEN> extends ASTNode<TOKEN> {
         this.children.add(child);
         child.parent = this;        
     }    
+
+    void PrePend(ASTNode<TOKEN> child) {
+        this.children.add(0, child);
+        child.parent = this;
+    }
     
     @Override
     public boolean isTerminal() {
@@ -34,5 +39,4 @@ public class NonTerminalASTNode<TOKEN> extends ASTNode<TOKEN> {
         arrayList.addAll(this.children);
         return arrayList;
     }
-    
 }

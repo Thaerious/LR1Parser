@@ -79,7 +79,7 @@ public class Parser<TOKEN>{
         
         for (int i = 0; i < rule.getRHS().size(); i++){
             StackItem pop = stack.pop();  
-            astNode.AddChild(pop.astNode);
+            astNode.PrePend(pop.astNode);
         }
         State state = stack.peek().state;
         

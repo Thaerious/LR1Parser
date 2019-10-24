@@ -20,22 +20,20 @@ public class Main {
     public static void main(String... args) throws IOException {
         Parser<String> parser = new Parser();
                 
-        parser.addRule("S : A");
-        parser.addRule("S : B");
-        parser.addRule("S : A S");
-        parser.addRule("S : B S");
-        parser.addRule("A : A A");
+        parser.addRule("S : SPART");
+        parser.addRule("S : S SPART");
+        parser.addRule("SPART : A B");
+        parser.addRule("SPART : B A");
         parser.addRule("A : a");
-        parser.addRule("B : < BPART >");
-        parser.addRule("BPART : BPART a");
-        parser.addRule("BPART : BPART b");
-        parser.addRule("BPART : BPART c");        
-        parser.addRule("BPART : ");        
+        parser.addRule("A : A A");
+        parser.addRule("B : b");
+        parser.addRule("B : B B");
+                
         parser.makeReady();
         
         printTable(parser.table, parser.builder);
         
-        parser.setInput("< a b c >".split(" "));
+        parser.setInput("a a b b".split(" "));
         boolean running = true;
         
         System.out.println(parser.input);
