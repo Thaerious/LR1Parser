@@ -24,4 +24,18 @@ public class ShiftAction extends Action{
     public String toString(){
         return "s" + destinationState;
     }   
+    
+    @Override
+    public boolean equals(Object obj){
+        if (obj instanceof ShiftAction == false) return false;
+        ShiftAction that = (ShiftAction) obj;
+        return that.destinationState == this.destinationState;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.destinationState;
+        return hash;
+    }
 }

@@ -25,4 +25,17 @@ public class GotoAction extends Action{
         return "g" + destinationState;
     }
     
+    @Override
+    public boolean equals(Object obj){
+        if (obj instanceof GotoAction == false) return false;
+        GotoAction that = (GotoAction) obj;
+        return that.destinationState == this.destinationState;
+    }    
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + this.destinationState;
+        return hash;
+    }
 }

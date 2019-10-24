@@ -16,5 +16,4 @@ abstract class Action {
     TYPE getType(){
         return type;
     }
-    
 }

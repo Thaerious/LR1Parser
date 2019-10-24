@@ -18,5 +18,16 @@ public class AcceptAction extends Action{
     public String toString(){
         return "ac";
     }
+  
+    @Override
+    public boolean equals(Object obj){
+        return (obj instanceof AcceptAction);
+    }      
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
     
 }

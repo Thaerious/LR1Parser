@@ -26,8 +26,16 @@ public class State extends ItemSet{
         this.addAll(source);
     }
     
-    void addAction(Symbol symbol, Action action){
-        this.actions.put(symbol, action);
+    /**
+     * Create a new symbol action association.  Return true if a value was 
+     * replaced.
+     * @param symbol
+     * @param action
+     * @return 
+     */
+    boolean addAction(Symbol symbol, Action action){
+        Action previous = this.actions.put(symbol, action);
+        return previous != null;
     }
     
     public Action getAction(Symbol symbol){
@@ -47,4 +55,8 @@ public class State extends ItemSet{
         }
         return list;
     }    
+
+    boolean hasAction(Symbol symbol) {
+        return this.actions.containsKey(symbol);
+    }
 }
