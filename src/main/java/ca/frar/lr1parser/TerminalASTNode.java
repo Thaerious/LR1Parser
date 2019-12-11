@@ -23,8 +23,10 @@ package ca.frar.lr1parser;
 public class TerminalASTNode<TOKEN> extends ASTNode<TOKEN> {
     
     final TOKEN token;
+    final Symbol symbol;
 
-    public TerminalASTNode(TOKEN token) {
+    public TerminalASTNode(Symbol symbol, TOKEN token) {
+        this.symbol = symbol;
         this.token = token;
     }
 

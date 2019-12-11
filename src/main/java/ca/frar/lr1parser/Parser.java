@@ -28,7 +28,7 @@ public class Parser<TOKEN>{
     ParseTableBuilder builder = new ParseTableBuilder();
     Rule start = null;
     Stack<StackItem> stack = new Stack<>();
-    LinkedList<Symbol<TOKEN>> input = new LinkedList<>();
+    LinkedList<TOKEN> input = new LinkedList<>();
     NonTerminalASTNode root;
     
     /**
@@ -52,11 +52,8 @@ public class Parser<TOKEN>{
     public void setInput(TOKEN[] tokens){
         input.clear();
         for (TOKEN token : tokens){
-            String toLowerCase = token.toString().toLowerCase();
-            Symbol symbol = new Symbol(toLowerCase, token);
-            this.input.add(symbol);
+            this.input.add(token);
         }
-        this.input.add(Symbol.END);
     }
     
     /**
@@ -74,9 +71,11 @@ public class Parser<TOKEN>{
      * @throws UnhandledInputException 
      */
     Action nextAction() throws UnhandledInputException{
-        Symbol<TOKEN> symbol = this.input.get(0);        
+        TOKEN token = this.input.get(0);        
         State state = currentState();
-        Action action = state.getAction(symbol);        
+        
+        Symbol symbol = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase string                
+        Action action = state.getAction(symbol); 
         
         if (!state.hasAction(symbol)){
             throw new UnhandledInputException(state, symbol);
@@ -103,16 +102,18 @@ public class Parser<TOKEN>{
     }    
     
     private void shiftAction(ShiftAction action){
-        Symbol<TOKEN> symbol = input.remove(0);
+        TOKEN token = input.remove(0);
+        Symbol symbol  = new Symbol(token.toString().toLowerCase());
+        
         State state = table.get(action.getDestinationState());        
-        TerminalASTNode<TOKEN> astNode = new TerminalASTNode<>(symbol.token);
+        TerminalASTNode<TOKEN> astNode = new TerminalASTNode<>(symbol, token);
         StackItem stackItem = new StackItem(state, symbol, astNode);        
         stack.push(stackItem);
     }
     
     private void reduceAction(ReduceAction action){
         Rule rule = action.getRule();
-        Symbol<TOKEN> symbol = action.getRule().getLHS();
+        Symbol symbol = action.getRule().getLHS();
         NonTerminalASTNode astNode = new NonTerminalASTNode<>(symbol);
         
         for (int i = 0; i < rule.getRHS().size(); i++){

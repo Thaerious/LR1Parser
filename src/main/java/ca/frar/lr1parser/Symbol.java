@@ -22,75 +22,78 @@ import java.util.Objects;
  *
  * @author edward
  */
-public class Symbol<TOKEN> {
+public class Symbol {
+
     private final String originString;
-    TOKEN token;
-    
-    public static Symbol END = new Symbol(){
+
+    public static Symbol END = new Symbol() {
         @Override
-        boolean isTerminal(){
+        boolean isTerminal() {
             return true;
-        }    
-        
-        public String toString(){
+        }
+
+        public String toString() {
             return "$";
         }
     };
-    
-    public static Symbol EMPTY = new Symbol(){
+
+    public static Symbol EMPTY = new Symbol() {
         @Override
-        boolean isTerminal(){
+        boolean isTerminal() {
             return true;
         }
-        
-        public String toString(){
+
+        public String toString() {
             return "~";
         }
-    };    
-    
-    public static Symbol NULL = new Symbol(){
-        @Override
-        boolean isTerminal(){
-            return true;
-        }    
-        
-        public String toString(){
-            return "";
-        }        
     };
-    
-    protected Symbol(){
+
+    public static Symbol NULL = new Symbol() {
+        @Override
+        boolean isTerminal() {
+            return true;
+        }
+
+        public String toString() {
+            return "";
+        }
+    };
+
+    protected Symbol() {
         this.originString = "";
     }
-    
-    public Symbol(String originString){
-        this(originString, null);  
-    }
 
-    public Symbol(String originString, TOKEN token){
-        this.token = token;
-        if (Character.isUpperCase(originString.charAt(0))){
+    public Symbol(String originString) {
+        if (Character.isUpperCase(originString.charAt(0))) {
             this.originString = originString.toUpperCase();
         } else {
             this.originString = originString.toLowerCase();
-        }        
-    }    
-    
-    String getOrigin(){
+        }
+    }
+
+    String getOrigin() {
         return originString;
     }
-    
-    boolean isTerminal(){
+
+    boolean isTerminal() {
         return !Character.isUpperCase(originString.charAt(0));
-    }    
-    
+    }
+
     @Override
-    public boolean equals(Object object){
-        if (object == Symbol.EMPTY && this == Symbol.EMPTY) return true;
-        if (object == Symbol.END && this == Symbol.END) return true;
-        if (object == Symbol.NULL && this == Symbol.NULL) return true;
-        
-        if (object.getClass() != Symbol.class) return false;
+    public boolean equals(Object object) {
+        if (object == Symbol.EMPTY && this == Symbol.EMPTY) {
+            return true;
+        }
+        if (object == Symbol.END && this == Symbol.END) {
+            return true;
+        }
+        if (object == Symbol.NULL && this == Symbol.NULL) {
+            return true;
+        }
+
+        if (object.getClass() != Symbol.class) {
+            return false;
+        }
         Symbol that = (Symbol) object;
         return this.originString.equals(that.originString);
     }
@@ -101,9 +104,9 @@ public class Symbol<TOKEN> {
         hash = 59 * hash + Objects.hashCode(this.originString);
         return hash;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return originString;
     }
 }

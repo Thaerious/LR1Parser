@@ -22,9 +22,9 @@ package ca.frar.lr1parser;
  */
 class UnhandledInputException extends Exception {
     private final State state;
-    private final Symbol<?> symbol;
+    private final Symbol symbol;
 
-    public UnhandledInputException(State state, Symbol<?> symbol) {
+    public UnhandledInputException(State state, Symbol symbol) {
         this.state = state;
         this.symbol = symbol;
     }
@@ -39,7 +39,7 @@ class UnhandledInputException extends Exception {
     /**
      * @return the symbol
      */
-    public Symbol<?> getSymbol() {
+    public Symbol getSymbol() {
         return symbol;
     }
 }
