@@ -18,19 +18,28 @@ package ca.frar.lr1parser;
 
 /**
  *
- * @author edward
+ * @author Ed Armstrong
  */
-public class TerminalASTNode<TOKEN> extends ASTNode<TOKEN> {
-    
-    final TOKEN token;
+class UnhandledInputException extends Exception {
+    private final State state;
+    private final Symbol<?> symbol;
 
-    public TerminalASTNode(TOKEN token) {
-        this.token = token;
+    public UnhandledInputException(State state, Symbol<?> symbol) {
+        this.state = state;
+        this.symbol = symbol;
     }
 
-    @Override
-    public boolean isTerminal() {
-        return true;
+    /**
+     * @return the state
+     */
+    public State getState() {
+        return state;
     }
-    
+
+    /**
+     * @return the symbol
+     */
+    public Symbol<?> getSymbol() {
+        return symbol;
+    }
 }

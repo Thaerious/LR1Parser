@@ -1,16 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 Ed Armstrong
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.frar.lr1parser;
-
 import java.util.LinkedList;
 import java.util.Stack;
 
 /**
  *
  * @author edward
+ * @param <TOKEN> The raw input type for symbols, typically a string.
  */
 public class Parser<TOKEN>{
     ParseTable table = null;
@@ -29,26 +40,53 @@ public class Parser<TOKEN>{
         else builder.addRule(new Rule(rule));
     }
     
+    /**
+     * Build the parse table if it's not already built and push a null symbol
+     * onto the stack;
+     */
     void makeReady(){
         if (this.table == null) this.table = builder.build(start);
         stack.push(new StackItem(this.table.get(0), Symbol.NULL, null));
     }
     
-    public Symbol<TOKEN> toSymbol(TOKEN token){
-        String toLowerCase = token.toString().toLowerCase();
-        return new Symbol(toLowerCase, token);
-    }
-    
     public void setInput(TOKEN[] tokens){
         input.clear();
-        for (TOKEN token : tokens) this.input.add(toSymbol(token));
+        for (TOKEN token : tokens){
+            String toLowerCase = token.toString().toLowerCase();
+            Symbol symbol = new Symbol(toLowerCase, token);
+            this.input.add(symbol);
+        }
         this.input.add(Symbol.END);
     }
     
-    boolean step(){
+    /**
+     * Retrieve the current state.
+     * @return 
+     */
+    State currentState(){
+        return stack.peek().state;
+    }
+    
+    /**
+     * Retrieve the next action based on current state and look-ahead symbol.
+     * This makes no change to the internal state of the parser.
+     * @return
+     * @throws UnhandledInputException 
+     */
+    Action nextAction() throws UnhandledInputException{
         Symbol<TOKEN> symbol = this.input.get(0);        
-        State state = stack.peek().state;
+        State state = currentState();
         Action action = state.getAction(symbol);        
+        
+        if (!state.hasAction(symbol)){
+            throw new UnhandledInputException(state, symbol);
+        }
+
+        return action;
+    }
+    
+    boolean step() throws UnhandledInputException{
+        Action action = nextAction();    
         
         switch (action.getType()){
             case SHIFT:
@@ -89,4 +127,5 @@ public class Parser<TOKEN>{
         StackItem stackItem = new StackItem(table.get(destinationState), symbol, astNode);
         stack.push(stackItem);        
     }    
+
 }

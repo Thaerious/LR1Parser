@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019 Ed Armstrong
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.frar.lr1parser;
 
 import java.io.PrintStream;
@@ -70,6 +86,7 @@ public class ParseTableBuilder {
 
         this.table = new ParseTable();
         this.followSet = new FollowSet(this, start.lhs);
+        
         State startState = new State(0, closure(start));
         table.add(startState);
 
@@ -114,8 +131,8 @@ public class ParseTableBuilder {
 
             ShiftAction shiftAction = new ShiftAction(m);
             if (state.hasAction(s) && !state.getAction(s).equals(shiftAction)) {
-                System.out.println("conflict in state " + state.index + ":" + s);
-                System.out.println("has " + state.getAction(s) + ", new " + shiftAction);
+                System.err.println("conflict in state " + state.index + ":" + s);
+                System.err.println("has " + state.getAction(s) + ", new " + shiftAction);
             }
             state.addAction(s, shiftAction);
         }
@@ -123,8 +140,8 @@ public class ParseTableBuilder {
 
     /* for each nonterminal symbol 's', take all items in 'state' #n with index
        in front of 's' and create a new item set where the cursor is
-       incremented.  Take the closure this set creates a new state #m, if an
-       identical state already exists, it instead.
+       incremented.  The closure of this set creates a new state #m, if an
+       identical state already exists, use it instead.
     
         Enter a shift action in 'state' for symbol 's', and set goto to m for 
         symbol 's'.
@@ -148,8 +165,8 @@ public class ParseTableBuilder {
 
             GotoAction gotoAction = new GotoAction(m);
             if (state.hasAction(s) && !state.getAction(s).equals(gotoAction)) {
-                System.out.println("conflict in state " + state.index + ":" + s);
-                System.out.println("has " + state.getAction(s) + ", new " + gotoAction);
+                System.err.println("conflict in state " + state.index + ":" + s);
+                System.err.println("has " + state.getAction(s) + ", new " + gotoAction);
             }
             state.addAction(s, gotoAction);
         }

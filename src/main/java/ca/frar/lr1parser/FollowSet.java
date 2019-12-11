@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 Ed Armstrong
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.frar.lr1parser;
 
@@ -23,7 +34,9 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
     public FollowSet(ParseTableBuilder parser, Symbol startSymbol) {
         this.parser = parser;
         this.rules = parser.getRules();
-        for (Symbol t : parser.nonterminals) this.put(t, new HashSet<>());
+        for (Symbol t : parser.nonterminals) {
+            this.put(t, new HashSet<>());
+        }
         this.add(startSymbol, Symbol.END);
         addFirsts();
         while (addFollows());
@@ -36,7 +49,9 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
      * @param followSymbol
      */
     void add(Symbol symbol, Symbol followSymbol) {
-        if (!this.containsKey(symbol)) this.put(symbol, new HashSet<>());
+        if (!this.containsKey(symbol)) {
+            this.put(symbol, new HashSet<>());
+        }
         HashSet<Symbol> follows = this.get(symbol);
         follows.add(followSymbol);
     }
@@ -48,7 +63,9 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
      * @param followSymbol
      */
     void addAll(Symbol symbol, Collection<Symbol> followSymbols) {
-        for (Symbol s : followSymbols) this.add(symbol, s);
+        for (Symbol s : followSymbols) {
+            this.add(symbol, s);
+        }
     }
 
     void addFirsts() {
@@ -63,11 +80,17 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
         for (int i = 1; i < rule.rhs.size(); i++) {
             Symbol a = rule.rhs.get(i - 1);
             Symbol b = rule.rhs.get(i);
-            if (a.isTerminal()) continue;
-            First first = new First(parser, b);
+            if (a.isTerminal()) {
+                continue;
+            }
 
-            first.remove(Symbol.EMPTY);
-            this.addAll(a, first);
+            try {
+                First first = new First(parser, b);
+                first.remove(Symbol.EMPTY);
+                this.addAll(a, first);
+            } catch (UnknownProductionException ex) {
+                throw new UnknownProductionException(ex.symbol, rule);
+            }
         }
     }
 
@@ -76,7 +99,9 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
 
         for (Symbol key : rules.keySet()) {
             for (Rule rule : rules.get(key)) {
-                if (this.checkFollows(rule)) found = true;
+                if (this.checkFollows(rule)) {
+                    found = true;
+                }
             }
         }
         return found;
@@ -86,7 +111,9 @@ public final class FollowSet extends HashMap<Symbol, HashSet<Symbol>> {
         boolean found = false;
 
         for (Symbol b : rule.rhs) {
-            if (b.isTerminal()) continue;
+            if (b.isTerminal()) {
+                continue;
+            }
 
             int i = rule.rhs.indexOf(b);
 
