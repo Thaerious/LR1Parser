@@ -27,19 +27,32 @@ import java.util.HashSet;
 public class First extends ArrayList<Symbol> {
     private final HashMap<Symbol, HashSet<Rule>> rules;
     private final ParseTableBuilder parser;
-
+    private final ArrayList<Symbol> done; /* first sets already looked at */
+    
     public First(ParseTableBuilder parser, Symbol symbol) {
         this.parser = parser;
         this.rules = parser.getRules();
+        this.done = new ArrayList<>();
+        this.done.add(symbol);
         this.first(symbol);
     }
+    
+    private First(ParseTableBuilder parser, Symbol symbol, ArrayList<Symbol> done) {
+        this.parser = parser;
+        this.rules = parser.getRules();
+        this.done = done;
+        this.done.add(symbol);
+        this.first(symbol);
+    }    
 
     private void first(Symbol symbol) {
+        System.out.println("first (" + symbol + ")");
+        
         if (symbol.isTerminal()) {
             this.add(symbol);
         } else {
-
             HashSet<Rule> possibleRules = this.rules.get(symbol);
+            
             if (possibleRules == null) {
                 throw new UnknownProductionException(symbol);
             }
@@ -56,13 +69,15 @@ public class First extends ArrayList<Symbol> {
 
     private void addRHS(Rule rule, Symbol symbol) {
         for (Symbol s : rule.rhs) {
-            if (s.equals(symbol)) {
+            if (this.done.contains(s)){
                 break;
-            } else if (s.isTerminal()) {
+            }
+            else if (s.isTerminal()) {
                 this.add(s);
                 break;
             } else {
-                First firstS = new First(parser, s);
+                this.done.add(s);
+                First firstS = new First(parser, s, this.done);
                 this.addAll(firstS);
                 if (!firstS.contains(Symbol.EMPTY)) {
                     break;

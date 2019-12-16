@@ -33,14 +33,22 @@ public class Main {
     public static void main(String... args) throws IOException {
         Parser<String> parser = new Parser();
 
-        parser.addRule("S : E");
-        parser.addRule("E : E a");
-        parser.addRule("E : a");
+        parser.addRule("S : ES");
+        parser.addRule("ES : ES E");
+        parser.addRule("ES : E");
+        
+        parser.addRule("E : AND");
+        parser.addRule("E : TOKENS");
+
+        parser.addRule("AND : E + E");
+        
+        parser.addRule("TOKENS : TOKENS a");
+        parser.addRule("TOKENS : a");
 
         parser.makeReady();
         
         TokenFactory<String, Token<String>> tokenFactory = new TokenFactory<>();
-        LinkedList<IsToken<String>> input = tokenFactory.build("a a a".split(" "));
+        LinkedList<IsToken<String>> input = tokenFactory.build("a + a + a".split(" "));
         parser.setInput(input);
         
         Printer.printTable(parser.table, parser.builder);
