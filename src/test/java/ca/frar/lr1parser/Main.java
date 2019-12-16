@@ -15,6 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.frar.lr1parser;
+
+import ca.frar.lr1parser.*;
+import ca.frar.lr1parser.demo.ParserTerminalController;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class ParseTable extends ArrayList<State>{}
+/**
+ *
+ * @author edward
+ */
+public class Main {
+
+    public static void main(String... args) throws IOException {
+        Parser<String> parser = new Parser();
+
+        parser.addRule("S : E");
+        parser.addRule("E : E a");
+        parser.addRule("E : a");
+
+        parser.makeReady();
+        parser.setInput("a a a".split(" "));
+        
+        Printer.printTable(parser.table, parser.builder);
+        new ParserTerminalController(parser).run();
+    }
+}

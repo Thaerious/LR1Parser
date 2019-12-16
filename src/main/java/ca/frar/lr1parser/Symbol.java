@@ -23,7 +23,6 @@ import java.util.Objects;
  * @author edward
  */
 public class Symbol {
-
     private final String originString;
 
     public static Symbol END = new Symbol() {
@@ -71,7 +70,7 @@ public class Symbol {
         }
     }
 
-    String getOrigin() {
+    public String getOrigin() {
         return originString;
     }
 

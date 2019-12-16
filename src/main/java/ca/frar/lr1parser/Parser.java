@@ -40,20 +40,35 @@ public class Parser<TOKEN>{
         else builder.addRule(new Rule(rule));
     }
     
+    public NonTerminalASTNode parse() throws UnhandledInputException{
+        while(this.step());
+        return this.root;
+    }
+    
+    /**
+     * Retrieve the AST root node.  This is only valid when the parsing is
+     * complete.
+     * @return 
+     */
+    public NonTerminalASTNode getRoot(){
+        return root;
+    }
+    
     /**
      * Build the parse table if it's not already built and push a null symbol
      * onto the stack;
      */
-    void makeReady(){
+    public void makeReady(){
         if (this.table == null) this.table = builder.build(start);
         stack.push(new StackItem(this.table.get(0), Symbol.NULL, null));
     }
     
-    public void setInput(TOKEN[] tokens){
+    public Parser setInput(TOKEN[] tokens){
         input.clear();
         for (TOKEN token : tokens){
             this.input.add(token);
         }
+        return this;
     }
     
     /**
@@ -65,26 +80,11 @@ public class Parser<TOKEN>{
     }
     
     /**
-     * Retrieve the next action based on current state and look-ahead symbol.
-     * This makes no change to the internal state of the parser.
-     * @return
+     * Consume the next token and advance the parser.
+     * @return If parsing should continue, true.
      * @throws UnhandledInputException 
      */
-    Action nextAction() throws UnhandledInputException{
-        TOKEN token = this.input.get(0);        
-        State state = currentState();
-        
-        Symbol symbol = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase string                
-        Action action = state.getAction(symbol); 
-        
-        if (!state.hasAction(symbol)){
-            throw new UnhandledInputException(state, symbol);
-        }
-
-        return action;
-    }
-    
-    boolean step() throws UnhandledInputException{
+    public boolean step() throws UnhandledInputException{
         Action action = nextAction();    
         
         switch (action.getType()){
@@ -101,9 +101,34 @@ public class Parser<TOKEN>{
         return true;
     }    
     
+ /**
+     * Retrieve the next action based on current state and look-ahead symbol.
+     * This makes no change to the internal state of the parser.
+     * @return
+     * @throws UnhandledInputException 
+     */
+    Action nextAction() throws UnhandledInputException{
+        Symbol symbol;
+        
+        if (this.input.isEmpty()){
+            symbol = Symbol.END;
+        } else {
+            TOKEN token = this.input.get(0);
+            symbol = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase toString result;            
+        }
+
+        Action action = currentState().getAction(symbol);
+        
+        if (!currentState().hasAction(symbol)){
+            throw new UnhandledInputException(currentState(), symbol);
+        }
+
+        return action;
+    }    
+    
     private void shiftAction(ShiftAction action){
         TOKEN token = input.remove(0);
-        Symbol symbol  = new Symbol(token.toString().toLowerCase());
+        Symbol symbol  = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase toString result;
         
         State state = table.get(action.getDestinationState());        
         TerminalASTNode<TOKEN> astNode = new TerminalASTNode<>(symbol, token);
@@ -128,5 +153,4 @@ public class Parser<TOKEN>{
         StackItem stackItem = new StackItem(table.get(destinationState), symbol, astNode);
         stack.push(stackItem);        
     }    
-
 }

@@ -52,8 +52,11 @@ public class ParseTableBuilder {
         ruleList.add(rule);
 
         for (Symbol symbol : rule.rhs) {
-            if (symbol.isTerminal() && !terminals.contains(symbol)) terminals.add(symbol);
-            else if (!symbol.isTerminal() && !nonterminals.contains(symbol)) nonterminals.add(symbol);
+            if (symbol.isTerminal() && !terminals.contains(symbol)) {
+                terminals.add(symbol);
+            } else if (!symbol.isTerminal() && !nonterminals.contains(symbol)) {
+                nonterminals.add(symbol);
+            }
         }
 
         return rule;
@@ -76,7 +79,9 @@ public class ParseTableBuilder {
     public void checkProductions() {
         for (Symbol symbol : this.nonterminals) {
             HashSet<Rule> ruleset = this.rules.get(symbol);
-            if (ruleset == null || ruleset.isEmpty()) throw new UnknownProductionException(symbol);
+            if (ruleset == null || ruleset.isEmpty()) {
+                throw new UnknownProductionException(symbol);
+            }
         }
     }
 
@@ -86,7 +91,7 @@ public class ParseTableBuilder {
 
         this.table = new ParseTable();
         this.followSet = new FollowSet(this, start.lhs);
-        
+
         State startState = new State(0, closure(start));
         table.add(startState);
 
@@ -105,39 +110,6 @@ public class ParseTableBuilder {
         return table;
     }
 
-    /* for each terminal symbol 's', take all items in 'state' #n with index
-       in front of 's' and create a new item set where the cursor is
-       incremented.  Take the closure this set creates a new state #m, if an
-       identical state already exists, use it instead.
-    
-        Enter a shift action in 'state' #n for symbol 's', and set goto m for 
-        symbol 's'.
-     */
-    void step2(Item i, State state) {
-        for (Symbol s : terminals) {
-            List<Item> all = new ArrayList<>();
-
-            /* create a closure set of all incremented items */
-            for (Item item : state.getAllItems(s)) all.add(item.increment());
-            if (all.isEmpty()) continue;
-            Closure closure = new Closure(this, all);
-
-            int m = table.indexOf(closure);
-            if (m == -1) {
-                m = this.table.size();
-                State newState = new State(m, closure);
-                table.add(newState);
-            }
-
-            ShiftAction shiftAction = new ShiftAction(m);
-            if (state.hasAction(s) && !state.getAction(s).equals(shiftAction)) {
-                System.err.println("conflict in state " + state.index + ":" + s);
-                System.err.println("has " + state.getAction(s) + ", new " + shiftAction);
-            }
-            state.addAction(s, shiftAction);
-        }
-    }
-
     /* for each nonterminal symbol 's', take all items in 'state' #n with index
        in front of 's' and create a new item set where the cursor is
        incremented.  The closure of this set creates a new state #m, if an
@@ -153,7 +125,9 @@ public class ParseTableBuilder {
             for (Item item : state.getAllItems(s)) {
                 all.add(item.increment());
             }
-            if (all.isEmpty()) continue;
+            if (all.isEmpty()) {
+                continue;
+            }
 
             Closure closure = new Closure(this, all);
             int m = table.indexOf(closure);
@@ -172,6 +146,43 @@ public class ParseTableBuilder {
         }
     }
 
+    /* for each terminal symbol 's', take all items in 'state' #n with index
+       in front of 's' and create a new item set where the cursor is
+       incremented.  Take the closure this set creates a new state #m, if an
+       identical state already exists, use it instead.
+    
+        Enter a shift action in 'state' #n for symbol 's', and set goto m for 
+        symbol 's'.
+     */
+    void step2(Item i, State state) {
+        for (Symbol s : terminals) {
+            List<Item> all = new ArrayList<>();
+
+            /* create a closure set of all incremented items */
+            for (Item item : state.getAllItems(s)) {
+                all.add(item.increment());
+            }
+            if (all.isEmpty()) {
+                continue;
+            }
+            Closure closure = new Closure(this, all);
+
+            int m = table.indexOf(closure);
+            if (m == -1) {
+                m = this.table.size();
+                State newState = new State(m, closure);
+                table.add(newState);
+            }
+
+            ShiftAction shiftAction = new ShiftAction(m);
+            if (state.hasAction(s) && !state.getAction(s).equals(shiftAction)) {
+                System.err.println("conflict in state " + state.index + ":" + s);
+                System.err.println("has " + state.getAction(s) + ", new " + shiftAction);
+            }
+            state.addAction(s, shiftAction);
+        }
+    }
+
     void step3(Item i, State state) {
         for (Item item : state) {
             if (item.isFinal()) {
@@ -183,9 +194,13 @@ public class ParseTableBuilder {
                         ReduceAction reduceAction = new ReduceAction(item.rule);
                         if (state.hasAction(s) && !state.getAction(s).equals(reduceAction)) {
                             Action curAction = state.getAction(s);
-                            if (curAction.getType() == Action.TYPE.SHIFT) continue;  
-                            if (curAction.getType() == Action.TYPE.REDUCE){
-                                if (reduceAction.getRule().index > ((ReduceAction)curAction).getRule().index) continue;
+                            if (curAction.getType() == Action.TYPE.SHIFT) {
+                                continue;
+                            }
+                            if (curAction.getType() == Action.TYPE.REDUCE) {
+                                if (reduceAction.getRule().index > ((ReduceAction) curAction).getRule().index) {
+                                    continue;
+                                }
                             }
                         }
                         state.addAction(s, reduceAction);
@@ -195,8 +210,6 @@ public class ParseTableBuilder {
         }
     }
 
-    
-    
     public void printRules(PrintStream stream) {
         StringBuilder builder = new StringBuilder();
         for (Symbol lhs : this.rules.keySet()) {

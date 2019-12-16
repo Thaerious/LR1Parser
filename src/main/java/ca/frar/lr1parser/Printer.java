@@ -16,80 +16,49 @@
  */
 package ca.frar.lr1parser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  *
- * @author edward
+ * @author Ed Armstrong
  */
-public class Main {
+public class Printer {
 
-    public static void main(String... args) throws IOException {
-        Parser<String> parser = new Parser();
-
-        parser.addRule("START : STATEMENT");
-        parser.addRule("STATEMENT : a = a");
-        parser.addRule("STATEMENT : if x then STATEMENT");
-        parser.addRule("STATEMENT : if x then STATEMENT else STATEMENT");
-
-        parser.makeReady();
-
-        printTable(parser.table, parser.builder);
-
-        parser.setInput("if x then if x then a = a else a = a".split(" "));
-        boolean running = true;
-
-        try {
-            printStep(parser);
-            while (running && System.in.read() != 'q') {
-                running = parser.step();
-                printStep(parser);
-            }
-        } catch (UnhandledInputException ex) {
-            System.out.println("Unhandled input '" + ex.getSymbol().token + "'");
-            System.out.println(ex.getState());
-            System.exit(1);
-        }
-
-        printTree(parser.root, 0);
-    }
-
-    public static void printStep(Parser<String> parser) throws UnhandledInputException {
+    public static void printStep(Parser<?> parser) throws UnhandledInputException {
         System.out.print(parser.currentState());
         System.out.print(parser.stack);
         System.out.print(" <- ");
         System.out.println(parser.input);
-        
+
         Action nextAction = parser.nextAction();
-        switch(nextAction.getType()){
+        switch (nextAction.getType()) {
             case SHIFT:
             case ACCEPT:
                 System.out.println("next action: " + nextAction);
                 break;
             case REDUCE:
-                ReduceAction reduceAction = (ReduceAction)nextAction;
-                System.out.println("next action: " + nextAction + " '" + reduceAction.getRule() + "'");                
+                ReduceAction reduceAction = (ReduceAction) nextAction;
+                System.out.println("next action: " + nextAction + " '" + reduceAction.getRule() + "'");
                 break;
         }
-        
+
         System.out.println("<press q to quit>");
     }
 
-    public static void printTree(NonTerminalASTNode<String> root, int depth) {
+    public static void printTree(NonTerminalASTNode<?> root, int depth) {
         for (int i = 0; i < depth; i++) {
             System.out.print("  ");
         }
         System.out.println("<" + root.production.getOrigin() + ">");
-        for (ASTNode<String> child : root.getChildren()) {
+        for (ASTNode<?> child : root.getChildren()) {
             if (child.isTerminal()) {
                 for (int i = 0; i <= depth; i++) {
                     System.out.print("  ");
                 }
-                TerminalASTNode<String> terminal = (TerminalASTNode<String>) child;
+                TerminalASTNode<?> terminal = (TerminalASTNode<?>) child;
                 System.out.println("<terminal value=\"" + terminal.token + "\"/>");
             } else {
-                printTree((NonTerminalASTNode<String>) child, depth + 1);
+                printTree((NonTerminalASTNode<?>) child, depth + 1);
             }
         }
         for (int i = 0; i < depth; i++) {

@@ -20,7 +20,7 @@ package ca.frar.lr1parser;
  *
  * @author Ed Armstrong
  */
-class UnhandledInputException extends Exception {
+public class UnhandledInputException extends Exception {
     private final State state;
     private final Symbol symbol;
 
