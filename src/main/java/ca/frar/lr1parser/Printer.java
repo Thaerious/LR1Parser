@@ -28,8 +28,13 @@ public class Printer {
         System.out.print(parser.currentState());
         System.out.print(parser.stack);
         System.out.print(" <- ");
-        System.out.println(parser.input);
 
+        for (IsToken t : parser.input){
+            System.out.print("[" + t.getSource() + "]");
+        }
+        
+        System.out.println("");
+        
         Action nextAction = parser.nextAction();
         switch (nextAction.getType()) {
             case SHIFT:
@@ -56,7 +61,7 @@ public class Printer {
                     System.out.print("  ");
                 }
                 TerminalASTNode<?> terminal = (TerminalASTNode<?>) child;
-                System.out.println("<terminal value=\"" + terminal.token + "\"/>");
+                System.out.println("<terminal name=\"" + terminal.token.getName() + "\">" + terminal.token.getSource() + "</terminal>");
             } else {
                 printTree((NonTerminalASTNode<?>) child, depth + 1);
             }

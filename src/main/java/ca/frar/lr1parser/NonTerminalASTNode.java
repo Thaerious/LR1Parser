@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author edward
  */
-public class NonTerminalASTNode<TOKEN> extends ASTNode<TOKEN> {
+public class NonTerminalASTNode<TOKEN extends IsToken> extends ASTNode<TOKEN> {
     final Symbol production;
     final ArrayList<ASTNode<TOKEN>> children = new ArrayList<>();
     

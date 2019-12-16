@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ca.frar.lr1parser;
+package ca.frar.lr1parser.demo;
+
+import ca.frar.lr1parser.IsToken;
 
 /**
  *
  * @author Ed Armstrong
  */
-class Token {
-    private String name;
-    private char source;
+public class Token <T> implements IsToken<T>{
+    private final String name;
+    private final T source;
     
-    public Token(char name, char source){
+    public Token(String name, T source){
+        this.name = name;
         this.source = source;
     }
     
@@ -22,6 +25,7 @@ class Token {
      * token.  This is case insensitive.
      * @return the name as used by the parser.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -30,7 +34,8 @@ class Token {
      * The source is the original string.
      * @return the source
      */
-    public char getSource() {
+    @Override
+    public T getSource() {
         return source;
     }    
 }

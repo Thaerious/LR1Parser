@@ -18,20 +18,21 @@ package ca.frar.lr1parser;
 
 /**
  *
- * @author edward
+ * @author Ed Armstrong
  */
-public class TerminalASTNode<TOKEN extends IsToken> extends ASTNode<TOKEN> {
+public interface IsToken<T> {
+
+    /**
+     * The name is used by the parser to determine the classification of the
+     * token.  This is case insensitive.
+     * @return the name as used by the parser.
+     */
+    String getName();
+
+    /**
+     * The source is the original string.
+     * @return the source
+     */
+    T getSource();
     
-    final TOKEN token;
-    final Symbol symbol;
-
-    public TerminalASTNode(Symbol symbol, TOKEN token) {
-        this.symbol = symbol;
-        this.token = token;
-    }
-
-    @Override
-    public boolean isTerminal() {
-        return true;
-    }    
 }

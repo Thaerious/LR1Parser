@@ -14,12 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.frar.lr1parser;
+package ca.frar.lr1parser.demo;
+import ca.frar.lr1parser.IsToken;
+import java.util.LinkedList;
 
 /**
- * @author edward
+ *
+ * @author Ed Armstrong
  */
-public abstract class ASTNode<TOKEN extends IsToken> {
-    ASTNode parent = null;
-    public abstract boolean isTerminal();
+public class TokenFactory<T, U extends IsToken<T>> {
+    
+    public LinkedList<IsToken<T>> build(T[] source){
+        LinkedList<IsToken<T>> linkedList = new LinkedList<>();        
+        for (T t : source) linkedList.add(this.parse(t));            
+        return linkedList;
+    }
+
+    /**
+     * Override this method.
+     * @param t
+     * @return 
+     */
+    public IsToken<T> parse(T t) {
+        return new Token<T>(t.toString(), t);
+    }
+    
 }

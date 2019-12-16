@@ -18,8 +18,11 @@ package ca.frar.lr1parser;
 
 import ca.frar.lr1parser.*;
 import ca.frar.lr1parser.demo.ParserTerminalController;
+import ca.frar.lr1parser.demo.Token;
+import ca.frar.lr1parser.demo.TokenFactory;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -28,14 +31,17 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String... args) throws IOException {
-        Parser<String> parser = new Parser();
+        Parser<Token<String>> parser = new Parser();
 
         parser.addRule("S : E");
         parser.addRule("E : E a");
         parser.addRule("E : a");
 
         parser.makeReady();
-        parser.setInput("a a a".split(" "));
+        
+        TokenFactory<String, Token<String>> tokenFactory = new TokenFactory<>();
+        LinkedList<Token<String>> input = tokenFactory.build("a a a".split(" "));
+        parser.setInput(input);
         
         Printer.printTable(parser.table, parser.builder);
         new ParserTerminalController(parser).run();

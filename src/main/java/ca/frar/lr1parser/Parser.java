@@ -16,6 +16,7 @@
  */
 package ca.frar.lr1parser;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -23,12 +24,12 @@ import java.util.Stack;
  * @author edward
  * @param <TOKEN> The raw input type for symbols, typically a string.
  */
-public class Parser<TOKEN>{
+public class Parser<TOKEN extends IsToken>{
     ParseTable table = null;
     ParseTableBuilder builder = new ParseTableBuilder();
     Rule start = null;
     Stack<StackItem> stack = new Stack<>();
-    LinkedList<TOKEN> input = new LinkedList<>();
+    List<IsToken> input;
     NonTerminalASTNode root;
     
     /**
@@ -63,13 +64,21 @@ public class Parser<TOKEN>{
         stack.push(new StackItem(this.table.get(0), Symbol.NULL, null));
     }
     
-    public Parser setInput(TOKEN[] tokens){
-        input.clear();
-        for (TOKEN token : tokens){
+    public Parser setInput(IsToken[] tokens){
+        input = new LinkedList<>();
+        for (IsToken token : tokens){
             this.input.add(token);
         }
         return this;
     }
+
+    public Parser setInput(List<IsToken> list){
+        input = new LinkedList<>();
+        for (IsToken token : list){
+            this.input.add(token);
+        }
+        return this;
+    }    
     
     /**
      * Retrieve the current state.
@@ -101,7 +110,7 @@ public class Parser<TOKEN>{
         return true;
     }    
     
- /**
+   /**
      * Retrieve the next action based on current state and look-ahead symbol.
      * This makes no change to the internal state of the parser.
      * @return
@@ -113,8 +122,8 @@ public class Parser<TOKEN>{
         if (this.input.isEmpty()){
             symbol = Symbol.END;
         } else {
-            TOKEN token = this.input.get(0);
-            symbol = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase toString result;            
+            IsToken token = this.input.get(0);
+            symbol = new Symbol(token.getName().toLowerCase());
         }
 
         Action action = currentState().getAction(symbol);
@@ -127,11 +136,11 @@ public class Parser<TOKEN>{
     }    
     
     private void shiftAction(ShiftAction action){
-        TOKEN token = input.remove(0);
-        Symbol symbol  = new Symbol(token.toString().toLowerCase()); // <-- here is why tokens must have a unique lowercase toString result;
+        IsToken token = input.remove(0);
+        Symbol symbol  = new Symbol(token.getName().toLowerCase());
         
         State state = table.get(action.getDestinationState());        
-        TerminalASTNode<TOKEN> astNode = new TerminalASTNode<>(symbol, token);
+        TerminalASTNode<IsToken> astNode = new TerminalASTNode<>(symbol, token);
         StackItem stackItem = new StackItem(state, symbol, astNode);        
         stack.push(stackItem);
     }

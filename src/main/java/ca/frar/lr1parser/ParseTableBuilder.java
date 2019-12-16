@@ -26,7 +26,6 @@ import java.util.List;
  * https://pages.github-dev.cs.illinois.edu/cs421-haskell/web-su19/files/handouts/lr-parsing-tables.pdf
  *
  * @author edward
- * @param <TOKEN> Token type.
  */
 public class ParseTableBuilder {
 

@@ -16,6 +16,7 @@
  */
 package ca.frar.lr1parser.demo;
 
+import ca.frar.lr1parser.IsToken;
 import ca.frar.lr1parser.Parser;
 import ca.frar.lr1parser.Printer;
 import ca.frar.lr1parser.UnhandledInputException;
@@ -25,7 +26,7 @@ import java.io.IOException;
  *
  * @author Ed Armstrong
  */
-public class ParserTerminalController <TOKEN>{
+public class ParserTerminalController <TOKEN extends IsToken>{
     private final Parser<TOKEN> parser;
     
     public ParserTerminalController(Parser<TOKEN> parser){
