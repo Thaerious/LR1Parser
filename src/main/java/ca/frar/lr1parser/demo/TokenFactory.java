@@ -36,7 +36,7 @@ public class TokenFactory<T, U extends IsToken<T>> {
      * @return 
      */
     public IsToken<T> parse(T t) {
-        return new Token<T>(t.toString(), t);
+        return new Token<>(t.toString(), t);
     }
     
 }

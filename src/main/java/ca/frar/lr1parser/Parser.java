@@ -22,14 +22,14 @@ import java.util.Stack;
 /**
  *
  * @author edward
- * @param <TOKEN> The raw input type for symbols, typically a string.
+ * @param <T> The raw input type for tokens, typically a string.
  */
-public class Parser<TOKEN extends IsToken>{
+public class Parser<T>{
     ParseTable table = null;
     ParseTableBuilder builder = new ParseTableBuilder();
     Rule start = null;
     Stack<StackItem> stack = new Stack<>();
-    List<IsToken> input;
+    List<IsToken<T>> input;
     NonTerminalASTNode root;
     
     /**
@@ -64,7 +64,7 @@ public class Parser<TOKEN extends IsToken>{
         stack.push(new StackItem(this.table.get(0), Symbol.NULL, null));
     }
     
-    public Parser setInput(IsToken[] tokens){
+    public Parser setInput(IsToken<T>[] tokens){
         input = new LinkedList<>();
         for (IsToken token : tokens){
             this.input.add(token);
@@ -72,7 +72,7 @@ public class Parser<TOKEN extends IsToken>{
         return this;
     }
 
-    public Parser setInput(List<IsToken> list){
+    public Parser setInput(List<IsToken<T>> list){
         input = new LinkedList<>();
         for (IsToken token : list){
             this.input.add(token);
@@ -122,7 +122,7 @@ public class Parser<TOKEN extends IsToken>{
         if (this.input.isEmpty()){
             symbol = Symbol.END;
         } else {
-            IsToken token = this.input.get(0);
+            IsToken<T> token = this.input.get(0);
             symbol = new Symbol(token.getName().toLowerCase());
         }
 
@@ -136,11 +136,11 @@ public class Parser<TOKEN extends IsToken>{
     }    
     
     private void shiftAction(ShiftAction action){
-        IsToken token = input.remove(0);
+        IsToken<T> token = input.remove(0);
         Symbol symbol  = new Symbol(token.getName().toLowerCase());
         
         State state = table.get(action.getDestinationState());        
-        TerminalASTNode<IsToken> astNode = new TerminalASTNode<>(symbol, token);
+        TerminalASTNode<IsToken<T>> astNode = new TerminalASTNode<>(symbol, token);
         StackItem stackItem = new StackItem(state, symbol, astNode);        
         stack.push(stackItem);
     }

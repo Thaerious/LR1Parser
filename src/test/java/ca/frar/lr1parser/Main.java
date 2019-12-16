@@ -31,7 +31,7 @@ import java.util.LinkedList;
 public class Main {
 
     public static void main(String... args) throws IOException {
-        Parser<Token<String>> parser = new Parser();
+        Parser<String> parser = new Parser();
 
         parser.addRule("S : E");
         parser.addRule("E : E a");
@@ -40,7 +40,7 @@ public class Main {
         parser.makeReady();
         
         TokenFactory<String, Token<String>> tokenFactory = new TokenFactory<>();
-        LinkedList<Token<String>> input = tokenFactory.build("a a a".split(" "));
+        LinkedList<IsToken<String>> input = tokenFactory.build("a a a".split(" "));
         parser.setInput(input);
         
         Printer.printTable(parser.table, parser.builder);
